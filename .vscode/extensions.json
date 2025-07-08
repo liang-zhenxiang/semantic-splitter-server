@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "kevinrose.vsc-python-indent",
+    "charliermarsh.ruff",
+    "tamasfe.even-better-toml",
+    "redhat.vscode-yaml",
+    "njpwerner.autodocstring",
+    "davidanson.vscode-markdownlint"
+  ],
+  "unwantedRecommendations": []
+}

@@ -1,0 +1,142 @@
+[project]
+name = "semantic-splitter-server"
+version = "1.0.0"
+description = "A semantic splitter server."
+license = {text = "Copyright © 2025 Flydiy. All Rights Reserved."}
+authors = [{name = "zaki", email = "746753491@qq.com"}]
+maintainers = []
+readme = "README.md"
+keywords = ["LLM", "Splitter"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Topic :: Text Processing",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "License :: Other/Proprietary License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.10, <3.13"
+dependencies = [
+  "orjson==3.10.15",
+  "loguru==0.7.3",
+  "pydantic==2.10.5",
+  "pydantic-extra-types==2.10.5",
+  "pydantic-settings==2.8.1",
+  "pyyaml==6.0.2",
+  "annotated-types==0.7.0",
+  "pytz==2025.2",
+  "click==8.2.1",
+  "setuptools>=69.5.1",
+  "typing-extensions>=4.14.0",
+  "contexts>=0.12",
+  # AI 模型相关依赖
+  "modelscope[nlp]>=1.11.0",
+  "torch>=2.0.0",
+  "transformers>=4.30.0",
+]
+
+
+[project.optional-dependencies]
+
+standard = [
+  "multidict==6.2.0",
+  "fastapi[standard]==0.115.12",
+  "uvicorn[standard]==0.34.3",
+  "modelscope[nlp]==1.23.2",
+]
+
+
+[project.urls]
+Homepage      = "https://git.flydiysz.cn/standard/ai/semantic-splitter-server.git"
+Documentation = "https://git.flydiysz.cn/standard/ai/semantic-splitter-server/-/blob/develop/README.md"
+Repository    = "https://git.flydiysz.cn/standard/ai/semantic-splitter-server.git"
+"Bug Tracker" = "https://git.flydiysz.cn/standard/ai/semantic-splitter-server/-/issues"
+
+[project.scripts]
+# 添加命令行脚本
+semantic-splitter = "manage:cli"
+setup-dev         = "scripts.setup_dev:main"
+check-dev         = "scripts.check_dev:main"
+format-code       = "scripts.format_code:main"
+
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["semantic_splitter", "scripts"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "semantic_splitter/",
+  "scripts/",
+  "static/",
+  "tests/",
+  "manage.py",
+  "start_server.py",
+  "README.md",
+  "pyproject.toml",
+  "pytest.ini",
+  "ruff.toml",
+]
+
+[tool.uv]
+# uv 特定配置
+dev-dependencies = [
+  # 测试
+  "pipdeptree==2.26.1",
+  "pytest~=8.3.5",
+  "pytest-asyncio~=0.25.3",
+  "pytest-env~=1.1.3",
+  "pytest-benchmark~=4.0.0",
+  "pytest-mock~=3.14.0",
+  # 代码检查和格式化
+  "dotenv-linter==0.6.0",
+  "ruff==0.11.2",
+  "pyright==1.1.391",
+  "pre-commit==4.2.0",
+  "commitizen==4.6.0",
+  # hot reload
+  "reloadium>=1.5.1",
+]
+
+# 配置包索引源
+[[tool.uv.index]]
+name    = "aliyun"
+url     = "https://nexus.flydiysz.cn/repository/pypi-group/simple"
+default = true
+
+
+# Pyright 配置
+[tool.pyright]
+include = ["semantic_splitter/**", "manage.py", "tests/**"]
+exclude = ["**/__pycache__"]
+# 配置stub搜索路径
+stubPath = "."
+# 允许未类型化的模块
+reportMissingImports   = false
+reportMissingTypeStubs = false
+
+
+# Commitizen 配置
+[tool.commitizen]
+name                     = "cz_conventional_commits"
+version                  = "2.0.0"
+tag_format               = "v$version"
+version_provider         = "pep621"
+update_changelog_on_bump = true
+bump_message             = "bump: 版本从 $current_version 更新到 $new_version"
+# 提交信息模板配置
+[tool.commitizen.customize]
+message_template = "{{change_type}}{{scope}}: {{message}}"
+example = "feat(auth): 添加JWT认证功能"
+schema = """
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+"""
+schema_pattern = "^(feat|fix|docs|style|refactor|test|chore)(\\(.+\\))?: .{1,50}"

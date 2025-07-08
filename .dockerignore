@@ -1,0 +1,27 @@
+# 测试
+tests/
+
+# 项目依赖
+node_modules
+
+# Logs
+logs
+*.log*
+
+# jetbrains
+.idea
+.mypy_cache
+.ruff_cache
+
+# venv
+.venv
+
+# 环境变量文件
+.env
+*.env.*
+
+# 其他
+.DS_Store
+Dockerfile
+*.egg-info/
+__pycache__
