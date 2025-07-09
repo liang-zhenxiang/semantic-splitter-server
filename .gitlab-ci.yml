@@ -1,52 +1,22 @@
-# 定义常量
-variables:
-  # DEV环境常量
-  DEV_CI_REGISTRY: 192.168.0.25:8888
-  DEV_CI_REGISTRY_USER: admin
-  # TEST环境常量
-  TEST_CI_REGISTRY_PULL: 192.168.0.214:8888
-  TEST_CI_REGISTRY_PUSH: harbor-test.flydiysz.cn
-  TEST_CI_REGISTRY_USER: admin
-  # PROD环境常量
-  PROD_CI_REGISTRY: 192.168.0.153:8883
-  PROD_CI_REGISTRY_USER: admin
+#$schema: https://gitlab.com/gitlab-org/gitlab/-/raw/v14.4.0-ee/app/assets/javascripts/editor/schema/ci.json
 
-  # 基础镜像库
-  CI_REGISTRY: $DEV_CI_REGISTRY
-
-  # harbor命名空间
-  HARBOR_NAMESPACE: standard
-  # k8s命名空间
-  K8S_NAMESPACE: standard
-  # 项目名称
-  PROJECT_NAME: semantic-splitter-server
-
-# 定义阶段
-stages:
-  - Build
-  - Release
-
-###########################################################Build###################################################################
-
-# npm 编译，目前选择仅监听master、develop、release、hotfix分支
-code-build:
-  stage: Build
-
-  image: $CI_REGISTRY/flydiy-base/flydiy-node_18.16.0-alpine:v20250606.01
-  script: |-
-
-    local_npm=$PWD/.npm
-    local_pnpm=$PWD/.pnpm-store
-
-    echo $local_npm
-    echo $local_pnpm
-
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH =~ /^release\/.*$/ || $CI_COMMIT_BRANCH =~ /^feature\/.*$/ || $CI_COMMIT_BRANCH =~ /^hotfix\/.*$/ || $CI_COMMIT_BRANCH =~ /^bugfix\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-master\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-develop\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-release\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-feature\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-hotfix\/.*$/ || $CI_COMMIT_BRANCH =~ /^s-bugfix\/.*$/'
-      when: always
-
-########################################################## Release ##################################################################
 include:
-  - project: "standard/cicd"
-    ref: master
-    file: "/standard/common/docker-push.yml"
+  - project: 'standard/cicd'
+    ref: v1
+    file:
+      - '/standard/common.yml'
+
+Build:
+  script:
+    - |
+      echo "Building "
+      set_env PROJECT_NAME llm-semantic-splitter-server
+      set_env DOCKERFILE_PATH ./docker/Dockerfile
+
+  extends: .build_manual
+
+Release:
+  extends:
+    - .release-dev
+  needs:
+    - Build
