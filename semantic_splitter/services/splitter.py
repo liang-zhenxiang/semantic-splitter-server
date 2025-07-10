@@ -17,7 +17,7 @@ def cut_sentence(self, para):
     return [_ for _ in para.split("\n") if _]
 
 
-class AliTextSplitterService:
+class AliTextSplitter:
     p = None
     model_name = None
     model_path = None
@@ -73,3 +73,16 @@ class AliTextSplitterService:
         result = self.p(documents=text)  # type: ignore
         sent_list = [i.replace("\t", "") for i in result["text"].split("\n\t") if i]  # type: ignore
         return sent_list
+
+
+zh_text_splitter = AliTextSplitter(
+    model_name="nlp_bert_document-segmentation_zh-base",
+    model_path="models/nlp_bert_document-segmentation_chinese-base",
+    device="cpu",
+)
+
+en_text_splitter = AliTextSplitter(
+    model_name="nlp_bert_document-segmentation_english-base",
+    model_path="models/nlp_bert_document-segmentation_english-base",
+    device="cpu",
+)

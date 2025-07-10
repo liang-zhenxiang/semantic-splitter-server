@@ -5,7 +5,7 @@ from fastapi.responses import ORJSONResponse
 from loguru import logger
 
 from semantic_splitter.schemas.splitter import SplitterRequest
-from semantic_splitter.services.text_splitter import get_text_splitter
+from semantic_splitter.services.splitter import en_text_splitter, zh_text_splitter
 
 
 _logger = logger.bind(name=__name__)
@@ -32,13 +32,13 @@ async def split_text(
     支持中文和英文的语义分段，基于 ModelScope 的 BERT 模型。
     """
     try:
-        # 获取文本分割器
-        splitter = get_text_splitter()
-
         _logger.info(f"📝 收到分段请求: 语言={request.language}, PDF={request.pdf}, 文本长度={len(request.text)}")
-
-        # 执行文本分割
-        segments = await splitter.split_text(text=request.text, language=request.language, is_pdf=request.pdf)
+        if request.language == "zh":
+            segments = await zh_text_splitter.split_text(text=request.text, pdf=request.pdf)
+        elif request.language == "en":
+            segments = await en_text_splitter.split_text(text=request.text, pdf=request.pdf)
+        else:
+            segments = []
 
         # 构建响应
         response_data = {
@@ -71,37 +71,4 @@ async def split_text(
         return ORJSONResponse(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
             content=error_response,
-        )
-
-
-@router.get(
-    path="/models",
-    summary="获取可用模型",
-    response_class=ORJSONResponse,
-)
-async def get_models() -> ORJSONResponse:
-    """
-    获取可用的语义分割模型信息
-    """
-    try:
-        splitter = get_text_splitter()
-        model_info = splitter.get_model_info()
-
-        return ORJSONResponse(
-            status_code=HTTPStatus.OK.value,
-            content={
-                "success": True,
-                "data": model_info,
-            },
-        )
-    except Exception as e:
-        _logger.error(f"❌ 获取模型信息失败: {str(e)}")
-
-        return ORJSONResponse(
-            status_code=HTTPStatus.INTERNAL_SERVER_ERROR.value,
-            content={
-                "success": False,
-                "message": f"获取模型信息失败: {str(e)}",
-                "data": None,
-            },
         )

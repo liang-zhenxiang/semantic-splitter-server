@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -14,7 +16,7 @@ class SplitterRequest(BaseModel):
         description="是否是PDF文件文本（影响预处理方式）",
         examples=[False],
     )
-    language: str = Field(
+    language: Literal["zh", "en"] = Field(
         default="zh",
         description="文本语言类型",
         examples=["zh", "en"],
