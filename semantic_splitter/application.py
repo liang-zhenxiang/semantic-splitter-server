@@ -191,11 +191,11 @@ async def lifespan(_app: FastAPI):
         device = os.environ.get("SEMANTIC_SPLITTER_DEVICE", "cpu")
         _logger.info(f"🤖 正在初始化文本分割器，设备: {device}")
 
-        from semantic_splitter.services.text_splitter import initialize_text_splitter
+        from semantic_splitter.services.splitter import initialize_text_splitter
 
-        text_splitter = initialize_text_splitter(device=device)
+        text_splitters = initialize_text_splitter(device=device)
 
-        _logger.info(f"✅ 文本分割器初始化成功，加载的模型: {text_splitter.get_available_models()}")
+        _logger.info(f"✅ 文本分割器初始化成功，加载的模型: {list(text_splitters.keys())}")
 
     except Exception as e:
         _logger.error(f"❌ 文本分割器初始化失败: {e}")

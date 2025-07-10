@@ -1,11 +1,12 @@
 from http import HTTPStatus
+import time
 
 from fastapi import APIRouter, Body
 from fastapi.responses import ORJSONResponse
 from loguru import logger
 
 from semantic_splitter.schemas.splitter import SplitterRequest
-from semantic_splitter.services.splitter import en_text_splitter, zh_text_splitter
+from semantic_splitter.services.splitter import get_text_splitter
 
 
 _logger = logger.bind(name=__name__)
@@ -33,12 +34,14 @@ async def split_text(
     """
     try:
         _logger.info(f"📝 收到分段请求: 语言={request.language}, PDF={request.pdf}, 文本长度={len(request.text)}")
-        if request.language == "zh":
-            segments = await zh_text_splitter.split_text(text=request.text, pdf=request.pdf)
-        elif request.language == "en":
-            segments = await en_text_splitter.split_text(text=request.text, pdf=request.pdf)
-        else:
-            segments = []
+        
+        # 根据语言获取对应的分割器
+        language = "en" if request.language == "en" else "zh" # 默认中文
+        splitter = get_text_splitter(language)
+
+        start_time = time.time()
+        
+        segments = await splitter.split_text(text=request.text, pdf=request.pdf)
 
         # 构建响应
         response_data = {
@@ -52,7 +55,7 @@ async def split_text(
             },
         }
 
-        _logger.info(f"✅ 分割成功，生成 {len(segments)} 个片段")
+        _logger.info(f"✅ 分割成功，生成 {len(segments)} 个片段, 耗时: {time.time() - start_time:.2f} 秒")
 
         return ORJSONResponse(
             status_code=HTTPStatus.OK.value,
