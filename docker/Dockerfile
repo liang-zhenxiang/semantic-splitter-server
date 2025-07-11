@@ -1,6 +1,6 @@
 # 使用支持多架构的基础镜像
 # 注意：如果私有镜像不支持多架构，请使用公共镜像或构建多架构基础镜像
-FROM harbor-prod.flydiysz.cn/flydiy-base/nts-foundation-flygpt:python312-uv-latest-arm64
+FROM harbor-prod.flydiysz.cn/flydiy-base/nts-foundation-flygpt:python312-uv
 
 ENV FLY_SERVER__PORT=20001
 
