@@ -44,7 +44,7 @@ jobs:
           type=ref,event=pr
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
-          type=raw,value={{date 'YYYYMMDD-HHmmss'}}-{{sha}},enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+          type=raw,value={{date 'YYYYMMDD-HHmmss'}}-{{sha}},enable=${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
