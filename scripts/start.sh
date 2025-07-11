@@ -48,4 +48,4 @@ fi
 
 # 启动服务
 echo "启动 Semantic Splitter Server..."
-exec python manage.py runserver 
+exec python /app/manage.py runserver 
