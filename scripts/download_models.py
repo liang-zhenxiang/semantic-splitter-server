@@ -34,7 +34,6 @@ def download_model(model):
         cache_dir=str(model_dir),
         revision="master",
         local_dir=str(model_dir),
-        local_dir_use_symlink=False,
     )
     print(f"模型 {model['name']} 下载完成。")
 
