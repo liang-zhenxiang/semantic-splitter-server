@@ -1,6 +1,11 @@
 # 使用支持多架构的基础镜像
 # 注意：如果私有镜像不支持多架构，请使用公共镜像或构建多架构基础镜像
-FROM harbor-prod.flydiysz.cn/flydiy-base/nts-foundation-flygpt:python312-uv
+# 多架构 Dockerfile
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+
+#使用多架构基础镜像，这里假设基础镜像已经支持多架构
+FROM --platform=${TARGETPLATFORM} registry.cn-shenzhen.aliyuncs.com/flydiy/nts-foundation-flygpt:python312-uv-latest-arm64
 
 ENV FLY_SERVER__PORT=20001
 
