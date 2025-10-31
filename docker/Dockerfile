@@ -11,6 +11,9 @@ ENV FLY_SERVER__PORT=20001
 
 WORKDIR /app
 
+# 拷贝项目-模型
+COPY models /app/models
+
 
 # 创建目录
 RUN mkdir -p ./configs
